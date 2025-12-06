@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import requests
+from mail import Mail
 
 # USE YOUR OWN npoint LINK! ADD AN IMAGE URL FOR YOUR POST. 👇
 posts = requests.get("https://api.npoint.io/00b23b65247a891e7d9e").json()
@@ -22,10 +23,18 @@ def contact():
     if request.method == "POST":
         form_data = request.form
 
-        print(form_data.get("name"))
-        print(form_data.get("email"))
-        print(form_data.get("phone"))
-        print(form_data.get("message"))
+        # print(form_data.get("name"))
+        # print(form_data.get("email"))
+        # print(form_data.get("phone"))
+        # print(form_data.get("message"))
+
+        final_msg = (f"Name: {form_data.get("name")}\n"
+                     f"Email: {form_data.get("email")}\n"
+                     f"Phone: {form_data.get("phone")}\n"
+                     f"Message: {form_data.get("message")}")
+
+        mail = Mail(form_data.get("email"), final_msg)
+        mail.send_mail()
 
         return render_template("contact.html", msg_sent=True)
 
